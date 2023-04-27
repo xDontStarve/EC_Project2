@@ -1,7 +1,7 @@
 //: version "1.8.7"
 
-module fetch(Clk, PCNew, Reset, PCNext, Inst);
-//: interface  /sz:(40, 40) /bd:[ ]
+module fetch(Clk, PCNew, PCNext, Reset, Inst);
+//: interface  /sz:(88, 222) /bd:[ Li0>Reset(44/222) Li1>Clk(160/222) Li2>PCNew[31:0](13/222) Ro0<PCNext[31:0](38/222) Ro1<Inst[31:0](159/222) ]
 input Clk;    //: /sn:0 {0}(122,387)(184,387)(184,357){1}
 input [31:0] PCNew;    //: /sn:0 {0}(124,319)(173,319){1}
 output [31:0] Inst;    //: /sn:0 /dp:1 {0}(330,317)(369,317){1}
@@ -25,11 +25,11 @@ wire [31:0] x;    //: /sn:0 /dp:4 {0}(194,319)(243,319){1}
   register g1 (.Q(x), .D(PCNew), .EN(w2), .CLR(!Reset), .CK(!Clk));   //: @(184,319) /sn:0 /R:1 /w:[ 0 1 0 1 1 ]
   tran g10(.Z(w2), .I(w11[0]));   //: @(323,167) /sn:0 /R:1 /w:[ 3 2 1 ] /ss:0
   //: input g6 (PCNew) @(122,319) /sn:0 /w:[ 0 ]
-  //: input g9 (Reset) @(122,265) /sn:0 /w:[ 0 ]
   //: output g7 (PCNext) @(413,153) /sn:0 /w:[ 0 ]
+  //: input g9 (Reset) @(122,265) /sn:0 /w:[ 0 ]
   //: output g12 (Inst) @(366,317) /sn:0 /w:[ 1 ]
-  //: joint g5 (x) @(245, 319) /w:[ 2 4 1 -1 ]
   //: joint g11 (w2) @(214, 153) /w:[ 2 4 1 6 ]
+  //: joint g5 (x) @(245, 319) /w:[ 2 4 1 -1 ]
   rom g0 (.A(x), .D(Inst), .OE(w2));   //: @(313,318) /sn:0 /w:[ 3 0 7 ] /mem:"/home/milax/Documents/EC/EC_Prac2_V2/mult.mem"
 
 endmodule
@@ -46,8 +46,8 @@ wire w1;    //: /sn:0 {0}(178,182)(222,182){1}
   clock g4 (.Z(Clk));   //: @(141,298) /sn:0 /w:[ 0 ] /omega:600 /phi:0 /duty:50
   //: joint g1 (PCNew) @(353, 126) /w:[ 1 2 -1 4 ]
   led g6 (.I(Inst));   //: @(528,242) /sn:0 /w:[ 0 ] /type:2
-  //: switch g9 (w1) @(161,182) /sn:0 /w:[ 0 ] /st:0
   led g7 (.I(PCNew));   //: @(519,85) /sn:0 /w:[ 0 ] /type:2
+  //: switch g9 (w1) @(161,182) /sn:0 /w:[ 0 ] /st:0
   fetch g0 (.PCNew(PCNew), .Clk(Clk), .Reset(w1), .Inst(Inst), .PCNext(PCNew));   //: @(223, 138) /sz:(88, 222) /sn:0 /p:[ Li0>3 Li1>1 Li2>1 Ro0<1 Ro1<5 ]
 
 endmodule
