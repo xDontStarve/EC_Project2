@@ -1,19 +1,61 @@
 //: version "1.8.7"
 
+module MEM();
+//: interface  /sz:(40, 40) /bd:[ ]
+//: enddecls
+
+
+endmodule
+
+module EXE(ALUResult, PCNext, Zero, rt, rs, BranchTarget, Inm32, ALUOperation, ALUSrc);
+//: interface  /sz:(142, 213) /bd:[ Ti0>ALUSrc(36/142) Ti1>ALUOperation[3:0](99/142) Li0>PCNext[31:0](25/213) Li1>Inm32[31:0](148/213) Li2>rs[31:0](81/213) Li3>rt[31:0](114/213) Ro0<Zero(57/213) Ro1<ALUResult[31:0](139/213) ]
+output Zero;    //: /sn:0 {0}(473,294)(333,294){1}
+input [31:0] Inm32;    //: /sn:0 {0}(99,165)(119,165){1}
+//: {2}(123,165)(283,165){3}
+//: {4}(121,167)(121,335)(152,335){5}
+input [3:0] ALUOperation;    //: /sn:0 /dp:1 {0}(280,273)(280,230)(96,230){1}
+input [31:0] rt;    //: /sn:0 {0}(99,355)(152,355){1}
+input ALUSrc;    //: /sn:0 {0}(98,389)(168,389)(168,368){1}
+output [31:0] ALUResult;    //: /sn:0 {0}(333,319)(474,319){1}
+input [31:0] PCNext;    //: /sn:0 {0}(101,133)(283,133){1}
+supply0 CarryIn;    //: /sn:0 /dp:1 {0}(244,85)(297,85)(297,125){1}
+output [31:0] BranchTarget;    //: /sn:0 {0}(405,149)(312,149){1}
+input [31:0] rs;    //: /sn:0 {0}(98,302)(235,302){1}
+wire [31:0] w4;    //: /sn:0 /dp:1 {0}(181,345)(235,345){1}
+wire Overflow;    //: /sn:0 /dp:1 {0}(297,173)(297,199)(351,199){1}
+//: enddecls
+
+  //: output g4 (ALUResult) @(471,319) /sn:0 /w:[ 1 ]
+  //: input g8 (PCNext) @(99,133) /sn:0 /w:[ 0 ]
+  //: output g3 (Zero) @(470,294) /sn:0 /w:[ 0 ]
+  //: input g2 (rt) @(97,355) /sn:0 /w:[ 0 ]
+  //: input g1 (rs) @(96,302) /sn:0 /w:[ 0 ]
+  //: supply0 g10 (CarryIn) @(238,85) /sn:0 /R:3 /w:[ 0 ]
+  add g6 (.A(Inm32), .B(PCNext), .S(BranchTarget), .CI(CarryIn), .CO(Overflow));   //: @(299,149) /sn:0 /R:1 /w:[ 3 1 1 1 0 ]
+  //: output g9 (BranchTarget) @(402,149) /sn:0 /w:[ 0 ]
+  //: input g7 (Inm32) @(97,165) /sn:0 /w:[ 0 ]
+  //: joint g12 (Inm32) @(121, 165) /w:[ 2 -1 1 4 ]
+  //: input g5 (ALUOperation) @(94,230) /sn:0 /w:[ 1 ]
+  mux g11 (.I0(rt), .I1(Inm32), .S(ALUSrc), .Z(w4));   //: @(168,345) /sn:0 /R:1 /w:[ 1 5 1 0 ] /ss:0 /do:0
+  ALU g0 (.ALUOperation(ALUOperation), .B(w4), .A(rs), .Zero(Zero), .ALUResult(ALUResult));   //: @(236, 274) /sz:(96, 97) /sn:0 /p:[ Ti0>0 Li0>1 Li1>1 Ro0<1 Ro1<0 ]
+  //: input g13 (ALUSrc) @(96,389) /sn:0 /w:[ 0 ]
+
+endmodule
+
 module ALU(B, ALUResult, ALUOperation, Zero, A);
-//: interface  /sz:(96, 97) /bd:[ Ti0>ALUOperation[3:0](44/96) Li0>B[31:0](65/97) Li1>A[31:0](28/97) Ro0<Zero(20/97) Ro1<ALUResult[31:0](45/97) ]
+//: interface  /sz:(96, 97) /bd:[ Ti0>ALUOperation[3:0](44/96) Li0>A[31:0](28/97) Li1>B[31:0](65/97) Ro0<ALUResult[31:0](45/97) Ro1<Zero(20/97) ]
 input [31:0] B;    //: /sn:0 {0}(304,108)(191,108){1}
 //: {2}(189,106)(189,90){3}
 //: {4}(189,110)(189,171){5}
 //: {6}(191,173)(305,173){7}
 //: {8}(189,175)(189,273)(212,273){9}
 output Zero;    //: /sn:0 {0}(656,238)(628,238){1}
-supply0 [30:0] Massa;    //: /sn:0 /dp:1 {0}(406,297)(400,297)(400,284)(376,284){1}
 input [31:0] A;    //: /sn:0 /dp:1 {0}(305,168)(167,168){1}
 //: {2}(165,166)(165,105){3}
 //: {4}(167,103)(304,103){5}
 //: {6}(165,101)(165,90){7}
 //: {8}(165,170)(165,239)(252,239){9}
+supply0 [30:0] Massa;    //: /sn:0 /dp:1 {0}(406,297)(400,297)(400,284)(376,284){1}
 input [3:0] ALUOperation;    //: /sn:0 {0}(484,89)(484,161){1}
 //: {2}(484,162)(484,197){3}
 //: {4}(484,198)(484,207){5}
@@ -28,57 +70,39 @@ wire [31:0] AsltB;    //: {0}(412,302)(525,302){1}
 wire sub;    //: /dp:1 {0}(479,198)(268,198){1}
 //: {2}(264,198)(202,198)(202,268)(212,268){3}
 //: {4}(266,200)(266,231){5}
-wire [31:0] AorB;    //: {0}(326,171)(432,171)(432,278)(525,278){1}
 wire [1:0] Selector;    //: /dp:1 {0}(488,162)(541,162)(541,261){1}
+wire [31:0] AorB;    //: {0}(326,171)(432,171)(432,278)(525,278){1}
 wire [31:0] AandB;    //: {0}(325,106)(441,106)(441,266)(525,266){1}
 wire Overflow;    //: /sn:0 {0}(266,279)(266,309)(307,309){1}
 //: enddecls
 
-  //: joint g8 (B) @(189, 108) /w:[ 1 2 -1 4 ]
   and g4 (.I0(A), .I1(B), .Z(AandB));   //: @(315,106) /sn:0 /w:[ 5 0 0 ]
-  tran g3(.Z(Selector), .I(ALUOperation[1:0]));   //: @(482,162) /sn:0 /R:2 /w:[ 0 2 1 ] /ss:1
-  or OR (.I0(A), .I1(B), .Z(AorB));   //: @(316,171) /sn:0 /w:[ 0 7 0 ]
+  //: joint g8 (B) @(189, 108) /w:[ 1 2 -1 4 ]
   //: joint g16 (B) @(189, 173) /w:[ 6 5 -1 8 ]
+  or OR (.I0(A), .I1(B), .Z(AorB));   //: @(316,171) /sn:0 /w:[ 0 7 0 ]
+  tran g3(.Z(Selector), .I(ALUOperation[1:0]));   //: @(482,162) /sn:0 /R:2 /w:[ 0 2 1 ] /ss:1
   add g2 (.A(NotBifSub), .B(A), .S(AsubB), .CI(sub), .CO(Overflow));   //: @(268,255) /sn:0 /R:1 /w:[ 1 9 0 5 0 ]
   //: input g1 (B) @(189,88) /sn:0 /R:3 /w:[ 3 ]
   //: output g18 (ALUResult) @(653,284) /sn:0 /w:[ 0 ]
   //: joint g10 (A) @(165, 103) /w:[ 4 6 -1 3 ]
   mux g6 (.I0(AandB), .I1(AorB), .I2(AsubB), .I3(AsltB), .S(Selector), .Z(ALUResult));   //: @(541,284) /sn:0 /R:1 /w:[ 1 1 3 1 1 5 ] /ss:1 /do:1
-  //: joint g7 (A) @(165, 168) /w:[ 1 2 -1 8 ]
   //: input g9 (ALUOperation) @(484,87) /sn:0 /R:3 /w:[ 0 ]
+  //: joint g7 (A) @(165, 168) /w:[ 1 2 -1 8 ]
   //: supply0 g12 (Massa) @(370,284) /sn:0 /R:3 /w:[ 1 ]
-  tran g11(.Z(sub), .I(ALUOperation[2]));   //: @(482,198) /sn:0 /R:2 /w:[ 0 4 3 ] /ss:0
-  tran g14(.Z(neg), .I(AsubB[31]));   //: @(357,253) /sn:0 /R:1 /w:[ 0 1 2 ] /ss:1
   xor g5 (.I0(sub), .I1(B), .Z(NotBifSub));   //: @(223,271) /sn:0 /w:[ 3 9 0 ]
-  nor g19 (.I0(ALUResult), .Z(Zero));   //: @(618,238) /sn:0 /w:[ 3 1 ]
+  tran g14(.Z(neg), .I(AsubB[31]));   //: @(357,253) /sn:0 /R:1 /w:[ 0 1 2 ] /ss:1
+  tran g11(.Z(sub), .I(ALUOperation[2]));   //: @(482,198) /sn:0 /R:2 /w:[ 0 4 3 ] /ss:0
   //: output g21 (Zero) @(653,238) /sn:0 /w:[ 0 ]
+  nor g19 (.I0(ALUResult), .Z(Zero));   //: @(618,238) /sn:0 /w:[ 3 1 ]
   //: joint g20 (ALUResult) @(588, 284) /w:[ 1 2 4 -1 ]
-  //: input g0 (A) @(165,88) /sn:0 /R:3 /w:[ 7 ]
   //: joint g15 (sub) @(266, 198) /w:[ 1 -1 2 4 ]
+  //: input g0 (A) @(165,88) /sn:0 /R:3 /w:[ 7 ]
   concat g13 (.I0(neg), .I1(Massa), .Z(AsltB));   //: @(411,302) /sn:0 /w:[ 1 0 0 ] /dr:0
 
 endmodule
 
-module EXE(ALUResult, Zero, B, A, ALUOperation);
-//: interface  /sz:(142, 122) /bd:[ Ti0>ALUOperation[3:0](73/142) Li0>B[31:0](79/122) Li1>A[31:0](31/122) Ro0<ALUResult[31:0](80/122) Ro1<Zero(33/122) ]
-input [31:0] B;    //: /sn:0 {0}(204,170)(246,170){1}
-output Zero;    //: /sn:0 {0}(401,125)(344,125){1}
-input [31:0] A;    //: /sn:0 {0}(205,133)(246,133){1}
-input [3:0] ALUOperation;    //: /sn:0 {0}(291,66)(291,104){1}
-output [31:0] ALUResult;    //: /sn:0 {0}(344,150)(399,150){1}
-//: enddecls
-
-  //: output g4 (ALUResult) @(396,150) /sn:0 /w:[ 1 ]
-  //: output g3 (Zero) @(398,125) /sn:0 /w:[ 0 ]
-  //: input g2 (B) @(202,170) /sn:0 /w:[ 0 ]
-  //: input g1 (A) @(203,133) /sn:0 /w:[ 0 ]
-  //: input g5 (ALUOperation) @(291,64) /sn:0 /R:3 /w:[ 0 ]
-  ALU g0 (.ALUOperation(ALUOperation), .B(B), .A(A), .Zero(Zero), .ALUResult(ALUResult));   //: @(247, 105) /sz:(96, 97) /sn:0 /p:[ Ti0>1 Li0>1 Li1>1 Ro0<1 Ro1<0 ]
-
-endmodule
-
 module BRegs32x32(Read2, Write, Read1, Data2, Data1, clr, clk, RegWrite, WriteData);
-//: interface  /sz:(147, 182) /bd:[ Ti0>clr(66/147) Ti1>clr(66/147) Ti2>clr(66/147) Li0>Read1[4:0](32/182) Li1>Read2[4:0](72/182) Li2>Write[4:0](108/182) Li3>WriteData[31:0](148/182) Li4>WriteData[31:0](148/182) Li5>Write[4:0](108/182) Li6>Read2[4:0](72/182) Li7>Read1[4:0](32/182) Li8>Read1[4:0](32/182) Li9>Read2[4:0](72/182) Li10>Write[4:0](108/182) Li11>WriteData[31:0](148/182) Bi0>clk(108/147) Bi1>RegWrite(40/147) Bi2>RegWrite(40/147) Bi3>clk(108/147) Bi4>clk(108/147) Bi5>RegWrite(40/147) Ro0<Data1[31:0](47/182) Ro1<Data2[31:0](139/182) Ro2<Data2[31:0](139/182) Ro3<Data1[31:0](47/182) Ro4<Data1[31:0](47/182) Ro5<Data2[31:0](139/182) ]
+//: interface  /sz:(147, 182) /bd:[ Ti0>clr(66/147) Ti1>clr(66/147) Ti2>clr(66/147) Ti3>clr(66/147) Ti4>clr(66/147) Ti5>clr(66/147) Ti6>clr(66/147) Ti7>clr(66/147) Ti8>clr(66/147) Li0>Read1[4:0](32/182) Li1>Read2[4:0](72/182) Li2>Write[4:0](108/182) Li3>WriteData[31:0](148/182) Li4>WriteData[31:0](148/182) Li5>Write[4:0](108/182) Li6>Read2[4:0](72/182) Li7>Read1[4:0](32/182) Li8>Read1[4:0](32/182) Li9>Read2[4:0](72/182) Li10>Write[4:0](108/182) Li11>WriteData[31:0](148/182) Li12>Read1[4:0](32/182) Li13>Read2[4:0](72/182) Li14>Write[4:0](108/182) Li15>WriteData[31:0](148/182) Li16>WriteData[31:0](148/182) Li17>Write[4:0](108/182) Li18>Read2[4:0](72/182) Li19>Read1[4:0](32/182) Li20>Read1[4:0](32/182) Li21>Read2[4:0](72/182) Li22>Write[4:0](108/182) Li23>WriteData[31:0](148/182) Li24>Read1[4:0](32/182) Li25>Read2[4:0](72/182) Li26>Write[4:0](108/182) Li27>WriteData[31:0](148/182) Li28>WriteData[31:0](148/182) Li29>Write[4:0](108/182) Li30>Read2[4:0](72/182) Li31>Read1[4:0](32/182) Li32>Read1[4:0](32/182) Li33>Read2[4:0](72/182) Li34>Write[4:0](108/182) Li35>WriteData[31:0](148/182) Bi0>clk(108/147) Bi1>RegWrite(40/147) Bi2>RegWrite(40/147) Bi3>clk(108/147) Bi4>clk(108/147) Bi5>RegWrite(40/147) Bi6>clk(108/147) Bi7>RegWrite(40/147) Bi8>RegWrite(40/147) Bi9>clk(108/147) Bi10>clk(108/147) Bi11>RegWrite(40/147) Bi12>clk(108/147) Bi13>RegWrite(40/147) Bi14>RegWrite(40/147) Bi15>clk(108/147) Bi16>clk(108/147) Bi17>RegWrite(40/147) Ro0<Data1[31:0](47/182) Ro1<Data2[31:0](139/182) Ro2<Data2[31:0](139/182) Ro3<Data1[31:0](47/182) Ro4<Data1[31:0](47/182) Ro5<Data2[31:0](139/182) Ro6<Data1[31:0](47/182) Ro7<Data2[31:0](139/182) Ro8<Data2[31:0](139/182) Ro9<Data1[31:0](47/182) Ro10<Data1[31:0](47/182) Ro11<Data2[31:0](139/182) Ro12<Data1[31:0](47/182) Ro13<Data2[31:0](139/182) Ro14<Data2[31:0](139/182) Ro15<Data1[31:0](47/182) Ro16<Data1[31:0](47/182) Ro17<Data2[31:0](139/182) ]
 output [31:0] Data2;    //: /sn:0 {0}(668,485)(668,472)(669,472)(669,445){1}
 input [4:0] Write;    //: /sn:0 {0}(-238,-38)(-138,-38)(-138,-37)(-66,-37){1}
 //: {2}(-65,-37)(-28,-37){3}
@@ -225,7 +249,7 @@ wire [31:0] w9;    //: /sn:0 {0}(663,416)(663,387)(309,387)(309,223){1}
 endmodule
 
 module Regs8x32(SB, SA, BOUT, AOUT, clk, clr, RegWr, SD, DIN);
-//: interface  /sz:(98, 69) /bd:[ Ti0>DIN[31:0](47/98) Ti1>DIN[31:0](47/98) Ti2>DIN[31:0](47/98) Li0>clk(59/69) Li1>RegWr(47/69) Li2>SB[2:0](22/69) Li3>SA[2:0](11/69) Li4>SD[2:0](35/69) Li5>SD[2:0](35/69) Li6>SA[2:0](11/69) Li7>SB[2:0](22/69) Li8>RegWr(47/69) Li9>clk(59/69) Li10>clk(59/69) Li11>RegWr(47/69) Li12>SB[2:0](22/69) Li13>SA[2:0](11/69) Li14>SD[2:0](35/69) Ri0>clr(35/69) Ri1>clr(35/69) Ri2>clr(35/69) Bo0<BOUT[31:0](65/98) Bo1<AOUT[31:0](37/98) Bo2<AOUT[31:0](37/98) Bo3<BOUT[31:0](65/98) Bo4<BOUT[31:0](65/98) Bo5<AOUT[31:0](37/98) ]
+//: interface  /sz:(98, 69) /bd:[ Ti0>DIN[31:0](47/98) Ti1>DIN[31:0](47/98) Ti2>DIN[31:0](47/98) Ti3>DIN[31:0](47/98) Ti4>DIN[31:0](47/98) Ti5>DIN[31:0](47/98) Ti6>DIN[31:0](47/98) Ti7>DIN[31:0](47/98) Ti8>DIN[31:0](47/98) Li0>clk(59/69) Li1>RegWr(47/69) Li2>SB[2:0](22/69) Li3>SA[2:0](11/69) Li4>SD[2:0](35/69) Li5>SD[2:0](35/69) Li6>SA[2:0](11/69) Li7>SB[2:0](22/69) Li8>RegWr(47/69) Li9>clk(59/69) Li10>clk(59/69) Li11>RegWr(47/69) Li12>SB[2:0](22/69) Li13>SA[2:0](11/69) Li14>SD[2:0](35/69) Li15>clk(59/69) Li16>RegWr(47/69) Li17>SB[2:0](22/69) Li18>SA[2:0](11/69) Li19>SD[2:0](35/69) Li20>SD[2:0](35/69) Li21>SA[2:0](11/69) Li22>SB[2:0](22/69) Li23>RegWr(47/69) Li24>clk(59/69) Li25>clk(59/69) Li26>RegWr(47/69) Li27>SB[2:0](22/69) Li28>SA[2:0](11/69) Li29>SD[2:0](35/69) Li30>clk(59/69) Li31>RegWr(47/69) Li32>SB[2:0](22/69) Li33>SA[2:0](11/69) Li34>SD[2:0](35/69) Li35>SD[2:0](35/69) Li36>SA[2:0](11/69) Li37>SB[2:0](22/69) Li38>RegWr(47/69) Li39>clk(59/69) Li40>clk(59/69) Li41>RegWr(47/69) Li42>SB[2:0](22/69) Li43>SA[2:0](11/69) Li44>SD[2:0](35/69) Ri0>clr(35/69) Ri1>clr(35/69) Ri2>clr(35/69) Ri3>clr(35/69) Ri4>clr(35/69) Ri5>clr(35/69) Ri6>clr(35/69) Ri7>clr(35/69) Ri8>clr(35/69) Bo0<BOUT[31:0](65/98) Bo1<AOUT[31:0](37/98) Bo2<AOUT[31:0](37/98) Bo3<BOUT[31:0](65/98) Bo4<BOUT[31:0](65/98) Bo5<AOUT[31:0](37/98) Bo6<BOUT[31:0](65/98) Bo7<AOUT[31:0](37/98) Bo8<AOUT[31:0](37/98) Bo9<BOUT[31:0](65/98) Bo10<BOUT[31:0](65/98) Bo11<AOUT[31:0](37/98) Bo12<BOUT[31:0](65/98) Bo13<AOUT[31:0](37/98) Bo14<AOUT[31:0](37/98) Bo15<BOUT[31:0](65/98) Bo16<BOUT[31:0](65/98) Bo17<AOUT[31:0](37/98) ]
 input [31:0] DIN;    //: /sn:0 {0}(531,269)(531,318){1}
 //: {2}(533,320)(627,320){3}
 //: {4}(631,320)(715,320){5}
@@ -365,6 +389,40 @@ wire [31:0] R10;    //: /sn:0 {0}(295,641)(295,600)(530,600){1}
 
 endmodule
 
+module main;    //: root_module
+wire Zero;    //: /sn:0 /dp:1 {0}(502,79)(537,79)(537,6){1}
+wire [31:0] Inm32;    //: /sn:0 /dp:1 {0}(321,196)(358,196){1}
+wire [31:0] w3;    //: /sn:0 /dp:1 {0}(795,139)(805,139)(805,321)(194,321)(194,264){1}
+wire w0;    //: /sn:0 {0}(827,13)(782,13)(782,116){1}
+wire [3:0] ALUOperation;    //: /sn:0 /dp:1 {0}(458,47)(458,10)(488,10){1}
+wire [31:0] rt;    //: /sn:0 /dp:1 {0}(358,162)(335,162){1}
+//: {2}(331,162)(321,162){3}
+//: {4}(333,164)(333,276)(514,276)(514,199)(571,199){5}
+wire [31:0] Inst;    //: /sn:0 {0}(56,47)(56,74)(153,74){1}
+wire ALUSrc;    //: /sn:0 {0}(423,7)(395,7)(395,47){1}
+wire MemWrite;    //: /sn:0 {0}(725,8)(658,8)(658,50){1}
+wire [31:0] ALUResult;    //: /sn:0 /dp:1 {0}(502,123)(544,123){1}
+//: {2}(548,123)(571,123){3}
+//: {4}(546,125)(546,279)(749,279)(749,149)(766,149){5}
+wire [31:0] PCNext;    //: /sn:0 {0}(341,4)(341,73)(358,73){1}
+wire [31:0] w1;    //: /sn:0 {0}(766,129)(720,129){1}
+wire RegDst;    //: /sn:0 {0}(63,131)(63,165)(153,165){1}
+wire clr;    //: /sn:0 {0}(317,357)(277,357)(277,264){1}
+wire RegWrite;    //: /sn:0 {0}(204,-18)(238,-18)(238,43){1}
+wire clk;    //: /sn:0 {0}(262,383)(247,383)(247,264){1}
+wire MemRead;    //: /sn:0 {0}(699,369)(652,369)(652,262){1}
+wire [31:0] rs;    //: /sn:0 {0}(358,129)(321,129){1}
+//: enddecls
+
+  mux g4 (.I0(ALUResult), .I1(w1), .S(w0), .Z(w3));   //: @(782,139) /sn:0 /R:1 /w:[ 5 0 1 0 ] /ss:1 /do:0
+  MEM g3 (.MemWrite(MemWrite), .WriteData(rt), .Adress(ALUResult), .MemRead(MemRead), .ReadData(w1));   //: @(572, 51) /sz:(147, 210) /sn:0 /p:[ Ti0>1 Li0>5 Li1>3 Bi0>1 Ro0<1 ]
+  //: joint g2 (rt) @(333, 162) /w:[ 1 -1 2 4 ]
+  EXE g1 (.ALUSrc(ALUSrc), .ALUOperation(ALUOperation), .PCNext(PCNext), .Inm32(Inm32), .rs(rs), .rt(rt), .Zero(Zero), .ALUResult(ALUResult));   //: @(359, 48) /sz:(142, 213) /sn:0 /p:[ Ti0>1 Ti1>0 Li0>1 Li1>1 Li2>0 Li3>0 Ro0<0 Ro1<0 ]
+  //: joint g5 (ALUResult) @(546, 123) /w:[ 2 -1 1 4 ]
+  Read g0 (.RegWrite(RegWrite), .RegDst(RegDst), .Inst(Inst), .clk(clk), .clr(clr), .WriteData(w3), .Inm32(Inm32), .rt(rt), .rs(rs));   //: @(154, 44) /sz:(166, 219) /sn:0 /p:[ Ti0>1 Li0>1 Li1>1 Bi0>1 Bi1>1 Bi2>1 Ro0<0 Ro1<3 Ro2<1 ]
+
+endmodule
+
 module Extend(S, A);
 //: interface  /sz:(40, 40) /bd:[ Li0>A[15:0](23/40) Li1>A[15:0](23/40) Ro0<S[31:0](23/40) Ro1<S[31:0](23/40) ]
 input [15:0] A;    //: /sn:0 {0}(307,243)(307,412)(325,412){1}
@@ -425,63 +483,48 @@ wire w1;    //: /sn:0 {0}(326,407)(326,404){1}
 
 endmodule
 
-module Read(Clk, ExtendedSign, R2, R1, Data1, RegDst, WriteData, Clr, WriteRegister, Data2, SignExtend, RegWrite);
-//: interface  /sz:(166, 219) /bd:[ Ti0>Clr(78/166) Li0>Read1[4:0](30/219) Li1>Read2[4:0](63/219) Li2>Write[4:0](96/219) Li3>WriteData[31:0](190/219) Li4>RegDst(146/219) Bi0>RegWrite(56/166) Bi1>Clk(124/166) Ro0<Data2[31:0](145/219) Ro1<Data1[31:0](75/219) ]
-output [31:0] Data2;    //: /sn:0 /dp:1 {0}(538,288)(627,288){1}
-input [4:0] R2;    //: /sn:0 {0}(230,221)(258,221){1}
-//: {2}(262,221)(389,221){3}
-//: {4}(260,223)(260,268)(302,268){5}
-input [31:0] WriteData;    //: /sn:0 {0}(290,387)(352,387)(352,297)(389,297){1}
-input Clk;    //: /sn:0 {0}(483,425)(498,425)(498,376){1}
-input [15:0] SignExtend;    //: /sn:0 /dp:1 {0}(442,462)(278,462){1}
-output [31:0] Data1;    //: /sn:0 {0}(622,196)(538,196){1}
-input [4:0] R1;    //: /sn:0 {0}(351,181)(389,181){1}
-input RegDst;    //: /sn:0 {0}(144,331)(318,331)(318,281){1}
-input RegWrite;    //: /sn:0 {0}(389,435)(430,435)(430,332){1}
-output [31:0] ExtendedSign;    //: /sn:0 /dp:1 {0}(484,464)(614,464){1}
-input Clr;    //: /sn:0 {0}(406,77)(462,77)(462,148){1}
-input [4:0] WriteRegister;    //: /sn:0 {0}(222,248)(302,248){1}
+module Read(clk, Inm32, Inst, rs, RegDst, clr, WriteData, rt, RegWrite);
+//: interface  /sz:(166, 219) /bd:[ Ti0>RegWrite(84/166) Li0>RegDst(121/219) Li1>Inst[31:0](30/219) Bi0>clk(93/166) Bi1>clr(123/166) Bi2>WriteData[31:0](40/166) Ro0<Inm32[31:0](141/219) Ro1<rt[31:0](92/219) Ro2<rs[31:0](51/219) ]
+output [31:0] Inm32;    //: /sn:0 /dp:1 {0}(484,464)(614,464){1}
+input [31:0] WriteData;    //: /sn:0 /dp:1 {0}(389,297)(365,297)(365,319)(145,319){1}
+output [31:0] rt;    //: /sn:0 /dp:1 {0}(538,288)(627,288){1}
+input [31:0] Inst;    //: /sn:0 {0}(212,308)(212,298){1}
+//: {2}(212,297)(212,268){3}
+//: {4}(212,267)(212,221){5}
+//: {6}(212,220)(212,181){7}
+//: {8}(212,180)(212,138){9}
+input RegDst;    //: /sn:0 {0}(146,348)(318,348)(318,281){1}
+input RegWrite;    //: /sn:0 {0}(145,375)(430,375)(430,332){1}
+input clr;    //: /sn:0 {0}(406,77)(462,77)(462,148){1}
+input clk;    //: /sn:0 {0}(144,397)(498,397)(498,376){1}
+output [31:0] rs;    //: /sn:0 {0}(622,196)(538,196){1}
+wire [4:0] w6;    //: /sn:0 {0}(216,268)(302,268){1}
+wire [4:0] w0;    //: /sn:0 {0}(302,248)(262,248)(262,223){1}
+//: {2}(264,221)(389,221){3}
+//: {4}(260,221)(216,221){5}
+wire [4:0] w3;    //: /sn:0 {0}(216,181)(389,181){1}
 wire [4:0] w10;    //: /sn:0 {0}(331,258)(389,258){1}
+wire [15:0] w8;    //: /sn:0 /dp:1 {0}(442,462)(224,462)(224,298)(216,298){1}
 wire w2;    //: /sn:0 {0}(498,360)(498,332){1}
 //: enddecls
 
-  //: joint g4 (R2) @(260, 221) /w:[ 2 -1 1 4 ]
-  //: input g8 (Clk) @(481,425) /sn:0 /w:[ 0 ]
-  //: output g16 (ExtendedSign) @(611,464) /sn:0 /w:[ 1 ]
-  mux g3 (.I0(R2), .I1(WriteRegister), .S(RegDst), .Z(w10));   //: @(318,258) /sn:0 /R:1 /w:[ 5 1 1 0 ] /ss:0 /do:0
-  //: input g2 (R2) @(228,221) /sn:0 /w:[ 0 ]
-  //: input g1 (R1) @(349,181) /sn:0 /w:[ 0 ]
-  //: output g10 (Data1) @(619,196) /sn:0 /w:[ 0 ]
-  //: input g6 (RegDst) @(142,331) /sn:0 /w:[ 0 ]
-  //: input g7 (WriteData) @(288,387) /sn:0 /w:[ 0 ]
-  //: input g9 (Clr) @(404,77) /sn:0 /w:[ 0 ]
-  not g12 (.I(Clk), .Z(w2));   //: @(498,370) /sn:0 /R:1 /w:[ 1 0 ]
-  //: input g5 (WriteRegister) @(220,248) /sn:0 /w:[ 0 ]
-  //: output g11 (Data2) @(624,288) /sn:0 /w:[ 1 ]
-  //: input g14 (SignExtend) @(276,462) /sn:0 /w:[ 1 ]
-  Extend g15 (.A(SignExtend), .S(ExtendedSign));   //: @(443, 447) /sz:(40, 40) /sn:0 /p:[ Li0>0 Ro0<0 ]
-  BRegs32x32 g0 (.clr(Clr), .Read1(R1), .Read2(R2), .Write(w10), .WriteData(WriteData), .clk(w2), .RegWrite(RegWrite), .Data1(Data1), .Data2(Data2));   //: @(390, 149) /sz:(147, 182) /sn:0 /p:[ Ti0>1 Li0>1 Li1>3 Li2>1 Li3>1 Bi0>1 Bi1>1 Ro0<1 Ro1<0 ]
-  //: input g13 (RegWrite) @(387,435) /sn:0 /w:[ 0 ]
-
-endmodule
-
-module main;    //: root_module
-wire [31:0] w13;    //: /sn:0 {0}(559,312)(718,312){1}
-wire [4:0] w6;    //: /sn:0 {0}(391,197)(333,197){1}
-wire [4:0] w7;    //: /sn:0 {0}(391,230)(335,230){1}
-wire w4;    //: /sn:0 {0}(981,227)(1115,227){1}
-wire [31:0] w3;    //: /sn:0 {0}(981,320)(1120,320){1}
-wire [3:0] w0;    //: /sn:0 {0}(853,162)(853,112){1}
-wire w12;    //: /sn:0 {0}(516,387)(516,430){1}
-wire w10;    //: /sn:0 {0}(391,313)(338,313){1}
-wire [4:0] w8;    //: /sn:0 {0}(391,263)(338,263){1}
-wire [31:0] w14;    //: /sn:0 {0}(559,242)(718,242){1}
-wire w11;    //: /sn:0 {0}(448,387)(448,429){1}
-wire w5;    //: /sn:0 {0}(470,166)(470,139)(333,139){1}
-wire [31:0] w9;    //: /sn:0 {0}(391,357)(338,357){1}
-//: enddecls
-
-  Read g1 (.Clr(w5), .RegDst(w10), .WriteData(w9), .Write(w8), .Read2(w7), .Read1(w6), .Clk(w12), .RegWrite(w11), .Data1(w14), .Data2(w13));   //: @(392, 167) /sz:(166, 219) /sn:0 /p:[ Ti0>0 Li0>0 Li1>0 Li2>0 Li3>0 Li4>0 Bi0>0 Bi1>0 Ro0<0 Ro1<0 ]
-  EXE g0 (.ALUOperation(w0), .A(w14), .B(w13), .Zero(w4), .ALUResult(w3));   //: @(719, 163) /sz:(261, 240) /sn:0 /p:[ Ti0>0 Li0>1 Li1>1 Ro0<0 Ro1<0 ]
+  //: input g8 (clk) @(142,397) /sn:0 /w:[ 0 ]
+  //: joint g4 (w0) @(262, 221) /w:[ 2 -1 4 1 ]
+  //: output g16 (Inm32) @(611,464) /sn:0 /w:[ 1 ]
+  mux g3 (.I0(w0), .I1(w6), .S(RegDst), .Z(w10));   //: @(318,258) /sn:0 /R:1 /w:[ 0 1 1 0 ] /ss:0 /do:1
+  //: input g17 (Inst) @(212,136) /sn:0 /R:3 /w:[ 9 ]
+  tran g2(.Z(w0), .I(Inst[20:16]));   //: @(210,221) /sn:0 /R:2 /w:[ 5 5 6 ] /ss:1
+  tran g1(.Z(w3), .I(Inst[25:21]));   //: @(210,181) /sn:0 /R:2 /w:[ 0 7 8 ] /ss:1
+  //: output g10 (rs) @(619,196) /sn:0 /w:[ 0 ]
+  //: input g6 (RegDst) @(144,348) /sn:0 /w:[ 0 ]
+  //: input g9 (clr) @(404,77) /sn:0 /w:[ 0 ]
+  //: input g7 (WriteData) @(143,319) /sn:0 /w:[ 1 ]
+  not g12 (.I(clk), .Z(w2));   //: @(498,370) /sn:0 /R:1 /w:[ 1 0 ]
+  //: output g11 (rt) @(624,288) /sn:0 /w:[ 1 ]
+  tran g5(.Z(w6), .I(Inst[15:11]));   //: @(210,268) /sn:0 /R:2 /w:[ 0 3 4 ] /ss:1
+  tran g14(.Z(w8), .I(Inst[15:0]));   //: @(210,298) /sn:0 /R:2 /w:[ 1 1 2 ] /ss:1
+  Extend g15 (.A(w8), .S(Inm32));   //: @(443, 447) /sz:(40, 40) /sn:0 /p:[ Li0>0 Ro0<0 ]
+  BRegs32x32 g0 (.clr(clr), .Read1(w3), .Read2(w0), .Write(w10), .WriteData(WriteData), .clk(w2), .RegWrite(RegWrite), .Data1(rs), .Data2(rt));   //: @(390, 149) /sz:(147, 182) /sn:0 /p:[ Ti0>1 Li0>1 Li1>3 Li2>1 Li3>0 Bi0>1 Bi1>1 Ro0<1 Ro1<0 ]
+  //: input g13 (RegWrite) @(143,375) /sn:0 /w:[ 0 ]
 
 endmodule
